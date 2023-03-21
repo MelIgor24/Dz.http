@@ -1,0 +1,26 @@
+
+import requests
+
+
+class YaUploader:
+    def __init__(self, token:str):
+        self.token = token
+
+    def upload(self, file_path:str):
+        upload_url = "https://cloud-api.yandex.net/v1/disk/resources/upload"
+        headers = {
+            'Content-type': 'application/json',
+            'Authorization': f'OAuth {self.token}'
+        }
+        params = {"path": '/' + file_path, "overwrite": "true"}
+        with open(file_path, 'rb') as f:
+            response = requests.get(upload_url, headers=headers, params=params)
+            upload_url = response.json().get('href')
+            requests.put(upload_url, data=f)
+
+
+if __name__ == '__main__':
+    file_path = 'Ya.txt'
+    token = 'Token'
+    uploader = YaUploader(token)
+    uploader.upload(file_path)

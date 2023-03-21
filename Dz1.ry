@@ -1,0 +1,26 @@
+import requests
+
+
+import json
+
+
+def heroes_list(necessary_heroes):
+    url = "https://akabab.github.io/superhero-api/api/all.json"
+    response = requests.get(url=url)
+    heroes = response.json()
+    specifications = {}
+    selected_heroes = []
+    for person in heroes:
+        if person['name'] in necessary_heroes:
+            selected_heroes.append(person['powerstats']['intelligence'])
+            if person['powerstats']['intelligence'] not in specifications:
+                specifications.setdefault(person['powerstats']['intelligence'], [person['name']])
+            else:
+                specifications[person['powerstats']['intelligence']].append(person['name'])
+
+    smart_hero = ','.join(specifications[max(selected_heroes)])
+    return print(f'Самый умный герой {smart_hero}, его интеллект {max(selected_heroes)}')
+
+
+if __name__ == "__main__":
+    heroes_list(['Hulk', 'Captain America', 'Thanos'])
